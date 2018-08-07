@@ -10,7 +10,7 @@ import tensorflow as tf
 from glob import glob
 from urllib.request import urlretrieve
 from tqdm import tqdm
-
+import cv2
 
 class DLProgress(tqdm):
     last_block = 0
@@ -90,8 +90,20 @@ def gen_batch_function(data_folder, image_shape):
                 gt_bg = np.all(gt_image == background_color, axis=2)
                 gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
                 gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
-
+                
+                
                 images.append(image)
+                
+                ## augmented data
+                image=cv2.flip(image,1) #flip
+                images.append(image)
+                gt_images.append(gt_image)
+                
+                image=cv2.flip(image,0) #flip
+                images.append(image)
+                gt_images.append(gt_image)
+                
+                
                 gt_images.append(gt_image)
 
             yield np.array(images), np.array(gt_images)
