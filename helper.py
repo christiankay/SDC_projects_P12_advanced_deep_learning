@@ -93,18 +93,21 @@ def gen_batch_function(data_folder, image_shape):
                 
                 
                 images.append(image)
+                gt_images.append(gt_image)
                 
                 ## augmented data
-                image=cv2.flip(image,1) #flip
-                images.append(image)
-                gt_images.append(gt_image)
+                image_fl1=cv2.flip(image,1) #flip
+                images.append(image_fl1)
+                gt_image_fl1=cv2.flip(gt_image,1)
+                gt_images.append(gt_image_fl1)
                 
-                image=cv2.flip(image,0) #flip
-                images.append(image)
-                gt_images.append(gt_image)
+                image_fl2=cv2.flip(image,0) #flip
+                images.append(image_fl2)
+                image_fl2=cv2.flip(gt_image,0)
+                gt_images.append(image_fl2)
                 
                 
-                gt_images.append(gt_image)
+                
 
             yield np.array(images), np.array(gt_images)
     return get_batches_fn

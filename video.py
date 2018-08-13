@@ -1,6 +1,8 @@
 from moviepy.editor import ImageSequenceClip
 import argparse
-
+from moviepy.editor import VideoFileClip
+import os
+import cv2
 
 def main():
     parser = argparse.ArgumentParser(description='Create driving video.')
@@ -23,5 +25,26 @@ def main():
     clip.write_videofile(video_file)
 
 
+def extract_frames(movie, imgdir):
+    
+    clip = VideoFileClip(movie)
+    frano = 0
+    for frames in clip.iter_frames():
+     
+        imgpath = os.path.join(imgdir, '{}.png'.format(str(frano).zfill(5)))
+        cv2.imwrite(imgpath, cv2.cvtColor(frames, cv2.COLOR_RGB2BGR))
+        print("Saved to: ", imgpath)
+        frano = frano +1
+
 if __name__ == '__main__':
-    main()
+    
+    movie = 'harder_challenge_video.mp4'
+    imgdir = 'D:/SDC_projects/SDC_projects_P12_advanced_deep_learning/movie_images/'
+    extract_frames(movie, imgdir)
+
+#
+#     #my_clip.write_gif('test.gif', fps=12)#my_clip. 
+#    video_output1 = 'project_video_output.mp4'
+#    video_input1 = VideoFileClip('project_video.mp4')#.subclip(22,26)
+#    processed_video = video_input1.fl_image(process_image)
+#    processed_video.write_videofile(video_output1, audio=False)
