@@ -44,6 +44,19 @@ The network is trained using the [`train_nn`](./main.py#L140) (from line 140 to 
 # Training
 
 The dataset used for training the network was
+
+Example of an Input/Groundtruth training pair:
+
+Input image:
+
+
+![png](images/umm_000005.png)
+
+Ground truth image:
+
+![png](images/umm_road_000005.png)
+
+
 The network training was done for 50 and 75 epochs. The following graphs show the loss after each epoch:
 
 [cross entropy loss] (http://www.cvlibs.net/download.php?file=data_road.zip) 
