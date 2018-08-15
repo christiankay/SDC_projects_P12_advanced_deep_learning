@@ -38,8 +38,8 @@ def extract_frames(movie, imgdir):
 
 if __name__ == '__main__':
     
-    movie = 'harder_challenge_video.mp4'
-    imgdir = 'D:/SDC_projects/SDC_projects_P12_advanced_deep_learning/movie_images/'
+    movie = 'C:\GIT\CarND-Advanced-Lane-Lines\harder_challenge_video.mp4'
+    imgdir = 'C:/GIT/SDC_projects_P12_advanced_deep_learning/video_images_hc/'
     extract_frames(movie, imgdir)
 
 #

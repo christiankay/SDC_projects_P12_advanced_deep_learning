@@ -5,7 +5,8 @@ import helper
 import warnings
 from distutils.version import LooseVersion
 import project_tests as tests
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
@@ -205,7 +206,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     # TODO: Implement function
     
     sess.run(tf.global_variables_initializer())
-    
+    loss_per_epoch = []
     print('Starting training... for {} epochs'.format(epochs))
     for epoch in range(epochs):
         print('Epoch : {}'.format(epoch + 1))
@@ -219,11 +220,13 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
                                     learning_rate: 0.0001
                                 })
             print("Loss: = {:.3f}".format(loss))
-            loss_log.append('{:3f}'.format(loss))
+            loss_log.append(float(loss))
         print(loss_log)
         print()
+        loss_per_epoch.append(loss_log)
     print('Training finished')
-            
+    
+    return loss_per_epoch        
             
      
     
@@ -278,21 +281,72 @@ def run():
         # TODO: Train NN using the train_nn function
         
         
-        epochs = 75#48 
+        epochs = 50#48 
         batch_size = 10
 
         #saver = tf.train.Saver()
         
-        train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, vgg_input_image,
+        loss_per_epoch = train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, vgg_input_image,
                  correct_label, vgg_keep_prob, learning_rate)
         
         
         #file_writer = tf.summary.FileWriter('/path/to/logs', sess.graph)
         
-        # TODO: Save inference data using helper.save_inference_samples
+#        # TODO: Save inference data using helper.save_inference_samples
+       # runs_dir = './'
+        data_dir = './'
+        
+       
+        # OPTIONAL: Apply the trained model to a video#
+        plt.figure("matplotlib")       
+                ## plot the training and validation loss for each epoch
+        mean_Loss_list = []
+        std_loss = []
+        for loss_list in loss_per_epoch:
+            print("loss_list", loss_list)
+            mean_Loss_list.append(np.mean(loss_list))
+            std_loss.append(np.std(loss_list))
+            
+        x  = range(len(mean_Loss_list))    
+        plt.plot(x, mean_Loss_list)
+        plt.title('model cross entropy loss')
+        plt.ylabel('mean cross entropy loss')
+        plt.xlabel('epoch')
+       # plt.legend(['training set', 'validation set'], loc='upper right')
+        plt.show()
+#        
+
+        import seaborn as sns
+        
+        plt.figure("violin")
+        sns.set()
+        
+
+        
+        d = np.asarray(loss_per_epoch)
+        d = d.T
+        print("loss_per_epoch", d)
+        p = d.shape[1]
+        print("shape", d.shape)
+        # Use cubehelix to get a custom sequential palette
+        pal = sns.cubehelix_palette(p, rot=-.5, dark=.3)
+        
+        # Show each distribution with both violins and points
+        sns.violinplot(data=d, palette=pal, inner="points")
+        plt.show()  
+        
+        
+        import pandas as pd
+        frame = pd.DataFrame()
+        frame['mean_loss'] = mean_Loss_list
+        frame['std_loss'] = std_loss
+        frame.to_CSV('Loss.csv')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input_image)
 
-        # OPTIONAL: Apply the trained model to a video
+        
+        
+        
+
 
 
 if __name__ == '__main__':

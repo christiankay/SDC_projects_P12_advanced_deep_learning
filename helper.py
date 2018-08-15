@@ -58,6 +58,7 @@ def maybe_download_pretrained_vgg(data_dir):
         os.remove(os.path.join(vgg_path, vgg_filename))
 
 
+                
 def gen_batch_function(data_folder, image_shape):
     """
     Generate function to create batches of training data
@@ -85,32 +86,40 @@ def gen_batch_function(data_folder, image_shape):
                 gt_image_file = label_paths[os.path.basename(image_file)]
 
                 image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
-                gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
+                gt_image_org = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
 
-                gt_bg = np.all(gt_image == background_color, axis=2)
+                gt_bg = np.all(gt_image_org == background_color, axis=2)
                 gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
                 gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
-                
-                
+
                 images.append(image)
                 gt_images.append(gt_image)
+                
+                
                 
                 ## augmented data
                 image_fl1=cv2.flip(image,1) #flip
                 images.append(image_fl1)
-                gt_image_fl1=cv2.flip(gt_image,1)
-                gt_images.append(gt_image_fl1)
+                
+                gt_image_fl1=cv2.flip(gt_image_org,1)
+                gt_bg = np.all(gt_image_fl1 == background_color, axis=2)
+                gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
+                gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)               
+                gt_images.append(gt_image)
                 
                 image_fl2=cv2.flip(image,0) #flip
                 images.append(image_fl2)
-                image_fl2=cv2.flip(gt_image,0)
-                gt_images.append(image_fl2)
                 
-                
-                
+                image_fl2=cv2.flip(gt_image_org,0)
+                gt_bg = np.all(image_fl2 == background_color, axis=2)
+                gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
+                gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)              
+                gt_images.append(gt_image)
+
 
             yield np.array(images), np.array(gt_images)
-    return get_batches_fn
+    return get_batches_fn                
+
 
 
 def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape):
@@ -124,6 +133,7 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
     :param image_shape: Tuple - Shape of image
     :return: Output for for each test image
     """
+    print("Search for data in: ", data_folder)
     for image_file in glob(os.path.join(data_folder, 'image_2', '*.png')):
         image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
 
@@ -150,6 +160,6 @@ def save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_p
     # Run NN on test images and save them to HD
     print('Training Finished. Saving test images to: {}'.format(output_dir))
     image_outputs = gen_test_output(
-        sess, logits, keep_prob, input_image, os.path.join(data_dir, 'data_road/testing'), image_shape)
+        sess, logits, keep_prob, input_image, os.path.join(data_dir, 'video_images_hc'), image_shape)
     for name, image in image_outputs:
         scipy.misc.imsave(os.path.join(output_dir, name), image)
