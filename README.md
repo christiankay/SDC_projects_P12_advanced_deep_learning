@@ -1,48 +1,67 @@
-# Semantic Segmentation
-### Introduction
-In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
+# CarND-Semantic-Segmentation-P2
+Udacity Self-Driving Car Nanodegree - Semantic Segmentation Project
 
-### Setup
-##### GPU
-`main.py` will check to make sure you are using GPU - if you don't have a GPU on your system, you can use AWS or another cloud computing platform.
-##### Frameworks and Packages
-Make sure you have the following is installed:
- - [Python 3](https://www.python.org/)
- - [TensorFlow](https://www.tensorflow.org/)
- - [NumPy](http://www.numpy.org/)
- - [SciPy](https://www.scipy.org/)
-##### Dataset
-Download the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php) from [here](http://www.cvlibs.net/download.php?file=data_road.zip).  Extract the dataset in the `data` folder.  This will create the folder `data_road` with all the training a test images.
+![Road](images/road.gif)
 
-### Start
-##### Implement
-Implement the code in the `main.py` module indicated by the "TODO" comments.
-The comments indicated with "OPTIONAL" tag are not required to complete.
-##### Run
-Run the following command to run the project:
-```
-python main.py
-```
-**Note** If running this in Jupyter Notebook system messages, such as those regarding test status, may appear in the terminal rather than the notebook.
+# Overview
 
-### Submission
-1. Ensure you've passed all the unit tests.
-2. Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
-3. Submit the following in a zip file.
- - `helper.py`
- - `main.py`
- - `project_tests.py`
- - Newest inference images from `runs` folder  (**all images from the most recent run**)
- 
- ### Tips
-- The link for the frozen `VGG16` model is hardcoded into `helper.py`.  The model can be found [here](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/vgg.zip)
-- The model is not vanilla `VGG16`, but a fully convolutional version, which already contains the 1x1 convolutions to replace the fully connected layers. Please see this [forum post](https://discussions.udacity.com/t/here-is-some-advice-and-clarifications-about-the-semantic-segmentation-project/403100/8?u=subodh.malgonde) for more information.  A summary of additional points, follow. 
-- The original FCN-8s was trained in stages. The authors later uploaded a version that was trained all at once to their GitHub repo.  The version in the GitHub repo has one important difference: The outputs of pooling layers 3 and 4 are scaled before they are fed into the 1x1 convolutions.  As a result, some students have found that the model learns much better with the scaling layers included. The model may not converge substantially faster, but may reach a higher IoU and accuracy. 
-- When adding l2-regularization, setting a regularizer in the arguments of the `tf.layers` is not enough. Regularization loss terms must be manually added to your loss function. otherwise regularization is not implemented.
- 
-### Using GitHub and Creating Effective READMEs
-If you are unfamiliar with GitHub , Udacity has a brief [GitHub tutorial](http://blog.udacity.com/2015/06/a-beginners-git-github-tutorial.html) to get you started. Udacity also provides a more detailed free [course on git and GitHub](https://www.udacity.com/course/how-to-use-git-and-github--ud775).
+The object of this project is to label the pixels of a road image using the Fully Convolutional Network (FCN) described in the [Fully Convolutional Networks for Semantic Segmentation](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf) by Jonathan Long, Even Shelhamer, and Trevor Darrel. The project is based on the starting project provided by Udacity in [this repo](https://github.com/udacity/CarND-Semantic-Segmentation).
 
-To learn about REAMDE files and Markdown, Udacity provides a free [course on READMEs](https://www.udacity.com/courses/ud777), as well. 
+# Prerequisites
 
-GitHub also provides a [tutorial](https://guides.github.com/features/mastering-markdown/) about creating Markdown files.
+Based on Udacity's start project the following frameworks and packages should be installed to execute the code:
+
+- [Python 3](https://www.python.org/)
+- [TensorFlow](https://www.tensorflow.org/) (>= V1.2)
+- [NumPy](http://www.numpy.org/)
+- [SciPy](https://www.scipy.org/)
+- [Seaborn]
+- [Matplotlib]
+
+For this project a GPU with VRAM greater then 4GB is required. I've used a Nvidia GEforce GTC 1080Ti for build an d train the model.
+As an alternative GPU cloud computing services can be used.
+
+The dataset used in this project is the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php). It can be download from [here](http://www.cvlibs.net/download.php?file=data_road.zip) 
+
+# Code description
+
+Most of the code is inside [`main.py`](./main.py) [`run`](./main.py#L178) function. The code downloads a pre-trained VGG16 model and extracts the input, keep probability, layer 3, layer 4 and layer 7 (method [`load_vgg`](./main.py#L20) from line 20 to line 44). These layers are used as a "pretrained feature extractor" which is connected in the [`layers`](./main.py#L49) function to subsequent convolution, deconvolution and skipping layers:
+
+- One convolutional layer with kernel 1 from VGG's layer 7 ([line 62](./main.py#L62)).
+- One deconvolutional layer with kernel 4 and stride 2 from the first convolutional layer ([line 70](./main.py#L70)).
+- One convolutional layer with kernel 1 from VGG's layer 4 ([line 78](./main.py#L78)).
+- The two layers above are added to create the first skip layer ([line 86](./main.py#L86)).
+- One deconvolutional layer with kernel 4 and stride 2 from the first ship layer ([line 88](./main.py#L88)).
+- One convolutional layer with kernel 1 from VGG's layer 3 ([line 96](./main.py#L96)).
+- The two layers above are added to create the second skip layer ([line 104](./main.py#L104)).
+- One deconvolutional layer with kernel 16 and stride 8 from the second skip layer ([line 106](./main.py#L106)).
+
+The convolutional and deconvolutional layer use a random-normal kernel initializer with standard deviation 0.01 and a L2 kernel regularizer with L2 0.001 to address over-fitting and feature selection.
+
+Once the network structure is defined, the optimizer and the cross-entropy loss is defined in the [`optimize`](./main.py#L116)(from line 116 to line 136) function using [Adam optimizer](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).
+
+The network is trained using the [`train_nn`](./main.py#L140) (from line 140 to line 174) using keep probability 0.5 and learning rate 0.00001. To facilitate the loss value analysis, later on, every batch loss values are stored in a python list.
+# Training
+
+The dataset used for training the network was
+The network training was done for 6, 12, 24 and 48 epochs. The following graphs show the loss after each epoch:
+
+![6 Epochs](images/loss_epoch_6.png)
+
+![12 Epochs](images/loss_epoch_12.png)
+
+![24 Epochs](images/loss_epoch_24.png)
+
+![48 Epochs](images/loss_epoch_48.png)
+
+The last epoch loss mean and standard deviation were:
+
+- 6 Epoch   =>    Mean: 0.425847    Std: 0.037720
+- 12 Epoch  =>    Mean: 0.122803    Std: 0.016831
+- 24 Epoch  =>    Mean: 0.073090    Std: 0.015247
+- 48 Epoch  =>    Mean: 0.041946    Std: 0.007950
+
+# Sample images
+
+It was fascinating to see how the segmentation improve when the epochs increase.
+
