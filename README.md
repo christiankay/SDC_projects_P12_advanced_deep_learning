@@ -28,40 +28,41 @@ The dataset used in this project is the [Kitti Road dataset](http://www.cvlibs.n
 Most of the code is inside [`main.py`](./main.py) [`run`](./main.py#L178) function. The code downloads a pre-trained VGG16 model and extracts the input, keep probability, layer 3, layer 4 and layer 7 (method [`load_vgg`](./main.py#L20) from line 20 to line 44). These layers are used as a "pretrained feature extractor" which is connected in the [`layers`](./main.py#L49) function to subsequent convolution, deconvolution and skipping layers:
 
 - One convolutional layer with kernel 1 from VGG's layer 7 ([line 62](./main.py#L62)).
-- One deconvolutional layer with kernel 4 and stride 2 from the first convolutional layer ([line 70](./main.py#L70)).
-- One convolutional layer with kernel 1 from VGG's layer 4 ([line 78](./main.py#L78)).
-- The two layers above are added to create the first skip layer ([line 86](./main.py#L86)).
-- One deconvolutional layer with kernel 4 and stride 2 from the first ship layer ([line 88](./main.py#L88)).
-- One convolutional layer with kernel 1 from VGG's layer 3 ([line 96](./main.py#L96)).
-- The two layers above are added to create the second skip layer ([line 104](./main.py#L104)).
-- One deconvolutional layer with kernel 16 and stride 8 from the second skip layer ([line 106](./main.py#L106)).
+- One deconvolutional layer with kernel 4 and stride 2 from the first convolutional layer ([line 67](./main.py#L67)).
+- One convolutional layer with kernel 1 from VGG's layer 4 ([line 74](./main.py#L74)).
+- The two layers above are added to create the first skip layer ([line 79](./main.py#L79)).
+- One deconvolutional layer with kernel 4 and stride 2 from the first ship layer ([line 81](./main.py#L81)).
+- One convolutional layer with kernel 1 from VGG's layer 3 ([line 87](./main.py#L87)).
+- The two layers above are added to create the second skip layer ([line 92](./main.py#L92)).
+- One deconvolutional layer with kernel 16 and stride 8 from the second skip layer ([line 94](./main.py#L94)).
 
 The convolutional and deconvolutional layer use a random-normal kernel initializer with standard deviation 0.01 and a L2 kernel regularizer with L2 0.001 to address over-fitting and feature selection.
 
-Once the network structure is defined, the optimizer and the cross-entropy loss is defined in the [`optimize`](./main.py#L116)(from line 116 to line 136) function using [Adam optimizer](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).
+Once the network structure is defined, the optimizer and the softmax_cross_entropy_with_logits is defined in the [`optimize`](./main.py#L178)function using [Adam optimizer](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).
 
 The network is trained using the [`train_nn`](./main.py#L140) (from line 140 to line 174) using keep probability 0.5 and learning rate 0.00001. To facilitate the loss value analysis, later on, every batch loss values are stored in a python list.
 # Training
 
 The dataset used for training the network was
-The network training was done for 6, 12, 24 and 48 epochs. The following graphs show the loss after each epoch:
 
-![6 Epochs](images/loss_epoch_6.png)
+Example of an Input/Groundtruth training pair:
 
-![12 Epochs](images/loss_epoch_12.png)
+Input image:
 
-![24 Epochs](images/loss_epoch_24.png)
 
-![48 Epochs](images/loss_epoch_48.png)
+![png](images/umm_000005.png)
 
-The last epoch loss mean and standard deviation were:
+Ground truth image:
 
-- 6 Epoch   =>    Mean: 0.425847    Std: 0.037720
-- 12 Epoch  =>    Mean: 0.122803    Std: 0.016831
-- 24 Epoch  =>    Mean: 0.073090    Std: 0.015247
-- 48 Epoch  =>    Mean: 0.041946    Std: 0.007950
+![png](images/umm_road_000005.png)
+
+
+The network training was done for 50 and 75 epochs. The following graphs show the loss after each epoch:
+
+[cross entropy loss] (http://www.cvlibs.net/download.php?file=data_road.zip) 
+
 
 # Sample images
 
-It was fascinating to see how the segmentation improve when the epochs increase.
+
 
