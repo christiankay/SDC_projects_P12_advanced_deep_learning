@@ -47,19 +47,19 @@ The dataset used for training the network was
 
 Example of an Input/Groundtruth training pair:
 
-Input image:
+#####Input image:
 
 
 ![png](images/umm_000005.png)
 
-Ground truth image:
+#####Ground truth image:
 
-![png](images/umm_road_000005.png)
+![png](images/aug_data_50eps.png)
 
 
 The network training was done for 50 and 75 epochs. The following graphs show the loss after each epoch:
 
-[cross entropy loss] (http://www.cvlibs.net/download.php?file=data_road.zip) 
+![cross entropy loss] (images/umm_road_000005.png) 
 
 
 # Sample images
