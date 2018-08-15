@@ -281,7 +281,7 @@ def run():
         # TODO: Train NN using the train_nn function
         
         
-        epochs = 50#48 
+        epochs = 2#48 
         batch_size = 10
 
         #saver = tf.train.Saver()
@@ -294,7 +294,7 @@ def run():
         
 #        # TODO: Save inference data using helper.save_inference_samples
        # runs_dir = './'
-        data_dir = './'
+       # data_dir = './'
         
        
         # OPTIONAL: Apply the trained model to a video#
