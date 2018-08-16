@@ -281,7 +281,7 @@ def run():
         # TODO: Train NN using the train_nn function
         
         
-        epochs = 2#48 
+        epochs = 57#48 
         batch_size = 10
 
         #saver = tf.train.Saver()
@@ -294,7 +294,7 @@ def run():
         
 #        # TODO: Save inference data using helper.save_inference_samples
        # runs_dir = './'
-       # data_dir = './'
+        data_dir = './'
         
        
         # OPTIONAL: Apply the trained model to a video#
@@ -340,7 +340,7 @@ def run():
         frame = pd.DataFrame()
         frame['mean_loss'] = mean_Loss_list
         frame['std_loss'] = std_loss
-        frame.to_CSV('Loss.csv')
+        frame.to_csv('Loss.csv')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input_image)
 
         

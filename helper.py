@@ -142,7 +142,7 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
             {keep_prob: 1.0, image_pl: [image]})
         im_softmax = im_softmax[0][:, 1].reshape(image_shape[0], image_shape[1])
         segmentation = (im_softmax > 0.5).reshape(image_shape[0], image_shape[1], 1)
-        mask = np.dot(segmentation, np.array([[128, 255, 0, 127]]))
+        mask = np.dot(segmentation, np.array([[193, 90, 4, 127]]))
         mask = scipy.misc.toimage(mask, mode="RGBA")
         street_im = scipy.misc.toimage(image)
         street_im.paste(mask, box=None, mask=mask)
@@ -160,6 +160,6 @@ def save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_p
     # Run NN on test images and save them to HD
     print('Training Finished. Saving test images to: {}'.format(output_dir))
     image_outputs = gen_test_output(
-        sess, logits, keep_prob, input_image, os.path.join(data_dir, 'data_road/testing'), image_shape)
+        sess, logits, keep_prob, input_image, os.path.join(data_dir, 'video_images_hc'), image_shape)
     for name, image in image_outputs:
         scipy.misc.imsave(os.path.join(output_dir, name), image)
