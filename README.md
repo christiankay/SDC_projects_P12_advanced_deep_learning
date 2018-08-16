@@ -111,12 +111,9 @@ Due to that fact, I decided to recude the amount of epochs to 57 which leads to 
 
 
 
-The dataset I've used to train the network was
-
 Example of an Input/Groundtruth training pair:
 
 ##### Input image:
-
 
 ![png](images/umm_000005.png)
 
@@ -125,12 +122,29 @@ Example of an Input/Groundtruth training pair:
 ![png](images/umm_road_000005.png)
 
 
-The network training was done for 50 and 75 epochs. The following graph shows the loss for each epoch:
-
-![cross entropy loss] (images/aug_data_50eps.png)
+The network tries to find the best model with respect to minimum loss maps the input images to the ground truth images. The final FCN-model can be used to segment unseen road images into different areas (classes) that have been used during the training (In this case: 2 classes, street and backround)
 
 
 # Prediction 
 
+A few examples from the best model run:
+
+### Good segmentations
+
+![png](images/um_000061_good.png)
+
+![png](images/um_000017_good.png)
 
 
+### Moderate segmentations
+
+![png](images/um_000062_mod.png)
+
+![png](images/um_000065_mod.png)
+
+
+### Bad segmentations
+
+![png](images/umm_000075_bad.png)
+
+![png](images/uu_000017_bad.png)
