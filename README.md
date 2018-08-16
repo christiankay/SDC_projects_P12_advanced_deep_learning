@@ -1,7 +1,7 @@
 # CarND-Semantic-Segmentation-P2
 Udacity Self-Driving Car Nanodegree - Semantic Segmentation Project
 
-![Road](images/road.gif)
+![Road](images/compare_all.gif)
 
 # Overview
 
@@ -43,11 +43,11 @@ Once the network structure is defined, the optimizer and the softmax_cross_entro
 The network is trained using the [`train_nn`](./main.py#L140) (from line 140 to line 174) using keep probability 0.5 and learning rate 0.00001. To facilitate the loss value analysis, later on, every batch loss values are stored in a python list.
 # Training
 
-After running a seassion with 75 epochs I found a loss annomalie happend after training the 58th epoch:
+After running 75 epochs I found a loss annomalie after training the 60th epoch:
 
-imgage
+![png](images/aug_data_75eps.png)
 
-
+Due to that fact, I decided to recude the amount of epochs to 57 whicht leads to an final loss(mean) of 0.02334. The standard deviation for all losses in this epochs 
 
 | ep.|  mean_loss           |  std_loss             | 
 |----|----------------------|-----------------------| 
@@ -111,7 +111,7 @@ imgage
 
 
 
-The dataset used for training the network was
+The dataset I've used to train the network was
 
 Example of an Input/Groundtruth training pair:
 
