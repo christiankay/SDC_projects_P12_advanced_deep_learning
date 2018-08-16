@@ -42,9 +42,10 @@ if __name__ == '__main__':
     imgdir = 'C:/GIT/SDC_projects_P12_advanced_deep_learning/video_images_hc/'
     extract_frames(movie, imgdir)
 
-#
-#     #my_clip.write_gif('test.gif', fps=12)#my_clip. 
+
+#    #my_clip. 
 #    video_output1 = 'project_video_output.mp4'
 #    video_input1 = VideoFileClip('project_video.mp4')#.subclip(22,26)
 #    processed_video = video_input1.fl_image(process_image)
-#    processed_video.write_videofile(video_output1, audio=False)
+#    #processed_video.write_videofile(video_output1, audio=False)
+#    processed_video.write_gif('test.gif', fps=12)
