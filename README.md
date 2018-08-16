@@ -15,11 +15,11 @@ Based on Udacity's start project the following frameworks and packages should be
 - [TensorFlow](https://www.tensorflow.org/) (>= V1.2)
 - [NumPy](http://www.numpy.org/)
 - [SciPy](https://www.scipy.org/)
-- [Seaborn]
-- [Matplotlib]
+- [Seaborn](https://seaborn.pydata.org/)
+- [Matplotlib](https://matplotlib.org/)
 
-For this project a GPU with VRAM greater then 4GB is required. I've used a Nvidia GEforce GTC 1080Ti for build an d train the model.
-As an alternative GPU cloud computing services can be used.
+For this project a GPU with more than 4GB VRAM is required. I've used a Nvidia GEforce GTX 1080Ti to build and train the segmentation model.
+As an alternative a GPU cloud computing services can be used.
 
 The dataset used in this project is the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php). It can be download from [here](http://www.cvlibs.net/download.php?file=data_road.zip) 
 
